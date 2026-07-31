@@ -34,7 +34,7 @@ export const Route = createFileRoute("/_authenticated/onboarding/founder")({
       },
     ],
   }),
-  component: FounderOnboarding;
+  component: FounderOnboarding,
 });
 
 function FounderOnboarding() {
