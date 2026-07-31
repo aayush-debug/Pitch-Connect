@@ -14,7 +14,172 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      founders: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      investor_preferences: {
+        Row: {
+          created_at: string
+          id: string
+          investor_id: string
+          max_ticket: number | null
+          min_ticket: number | null
+          sectors: string[]
+          stages: string[]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          investor_id: string
+          max_ticket?: number | null
+          min_ticket?: number | null
+          sectors?: string[]
+          stages?: string[]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          investor_id?: string
+          max_ticket?: number | null
+          min_ticket?: number | null
+          sectors?: string[]
+          stages?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_preferences_investor_id_fkey"
+            columns: ["investor_id"]
+            isOneToOne: true
+            referencedRelation: "investors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      investors: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      matches: {
+        Row: {
+          created_at: string
+          id: string
+          investor_id: string
+          startup_id: string
+          status: Database["public"]["Enums"]["match_status"]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          investor_id: string
+          startup_id: string
+          status?: Database["public"]["Enums"]["match_status"]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          investor_id?: string
+          startup_id?: string
+          status?: Database["public"]["Enums"]["match_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matches_investor_id_fkey"
+            columns: ["investor_id"]
+            isOneToOne: false
+            referencedRelation: "investors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matches_startup_id_fkey"
+            columns: ["startup_id"]
+            isOneToOne: false
+            referencedRelation: "startups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      startups: {
+        Row: {
+          ask_amount: number | null
+          created_at: string
+          deck_url: string | null
+          founder_id: string
+          id: string
+          name: string
+          one_liner: string
+          sector: string
+          stage: string
+          video_url: string | null
+        }
+        Insert: {
+          ask_amount?: number | null
+          created_at?: string
+          deck_url?: string | null
+          founder_id: string
+          id?: string
+          name: string
+          one_liner: string
+          sector: string
+          stage: string
+          video_url?: string | null
+        }
+        Update: {
+          ask_amount?: number | null
+          created_at?: string
+          deck_url?: string | null
+          founder_id?: string
+          id?: string
+          name?: string
+          one_liner?: string
+          sector?: string
+          stage?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "startups_founder_id_fkey"
+            columns: ["founder_id"]
+            isOneToOne: false
+            referencedRelation: "founders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +188,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      match_status: "pending" | "matched" | "passed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +315,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      match_status: ["pending", "matched", "passed"],
+    },
   },
 } as const
