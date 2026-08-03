@@ -79,6 +79,8 @@ function FounderOnboarding() {
         sector,
         stage,
         ask_amount: ask ? Number(ask) : null,
+        deck_url: deckPath,
+        video_url: videoPath,
       });
       if (startupError) throw startupError;
 
