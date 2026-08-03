@@ -212,32 +212,20 @@ function Dashboard() {
               </Card>
             )}
 
-            <h2 className="mt-10 text-xl font-semibold">Matching deal flow</h2>
-            <div className="mt-4 grid gap-4">
-              {deals.isLoading && <Skeleton className="h-28 w-full" />}
-              {deals.data?.length === 0 && (
-                <Card className="border-border bg-card p-6 text-sm text-muted-foreground">
-                  No startups match your filters yet.
-                </Card>
-              )}
-              {deals.data?.map((s) => (
-                <Card key={s.id} className="border-border bg-card p-6">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <h3 className="text-lg font-semibold">{s.name}</h3>
-                      <p className="mt-1 text-sm text-muted-foreground">{s.one_liner}</p>
-                    </div>
-                    <span className="font-display text-lg text-primary">
-                      {formatMoney(s.ask_amount)}
-                    </span>
-                  </div>
-                  <div className="mt-4 flex gap-2">
-                    <Badge variant="secondary">{s.sector}</Badge>
-                    <Badge variant="secondary">{s.stage}</Badge>
-                  </div>
-                </Card>
-              ))}
+            <div className="mt-10 flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h2 className="text-xl font-semibold">Matching deal flow</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {deals.isLoading
+                    ? "Checking for new startups…"
+                    : `${deals.data?.length ?? 0} startup${deals.data?.length === 1 ? "" : "s"} match your sectors and stages.`}
+                </p>
+              </div>
+              <Button asChild>
+                <Link to="/discover">Open discovery feed</Link>
+              </Button>
             </div>
+
           </section>
         )}
       </div>
