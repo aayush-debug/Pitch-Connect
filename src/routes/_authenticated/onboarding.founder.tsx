@@ -49,6 +49,8 @@ function FounderOnboarding() {
   const [sector, setSector] = useState<string>("");
   const [stage, setStage] = useState<string>("");
   const [ask, setAsk] = useState("");
+  const [deckPath, setDeckPath] = useState<string | null>(null);
+  const [videoPath, setVideoPath] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event: React.FormEvent) {
