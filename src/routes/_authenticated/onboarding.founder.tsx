@@ -191,7 +191,29 @@ function FounderOnboarding() {
               />
             </div>
 
+            <div className="space-y-6 rounded-xl border border-border bg-muted/20 p-5">
+              <PitchFileUpload
+                label="Pitch deck"
+                hint="PDF only, up to 20MB. Only you can see it until you publish."
+                bucket="decks"
+                accept="application/pdf"
+                maxBytes={20 * 1024 * 1024}
+                value={deckPath}
+                onUploaded={setDeckPath}
+              />
+              <PitchFileUpload
+                label="Pitch video"
+                hint="Any common video format, up to 100MB. Keep it under 2 minutes."
+                bucket="videos"
+                accept="video/*"
+                maxBytes={100 * 1024 * 1024}
+                value={videoPath}
+                onUploaded={setVideoPath}
+              />
+            </div>
+
             <Button type="submit" className="w-full" disabled={loading || !sector || !stage}>
+
               {loading ? "Saving…" : "Publish startup profile"}
             </Button>
           </form>
