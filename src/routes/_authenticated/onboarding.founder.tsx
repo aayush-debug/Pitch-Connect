@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { PitchFileUpload } from "@/components/pitch-file-upload";
 import {
   Select,
   SelectContent,
@@ -48,6 +49,8 @@ function FounderOnboarding() {
   const [sector, setSector] = useState<string>("");
   const [stage, setStage] = useState<string>("");
   const [ask, setAsk] = useState("");
+  const [deckPath, setDeckPath] = useState<string | null>(null);
+  const [videoPath, setVideoPath] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event: React.FormEvent) {
@@ -76,6 +79,8 @@ function FounderOnboarding() {
         sector,
         stage,
         ask_amount: ask ? Number(ask) : null,
+        deck_url: deckPath,
+        video_url: videoPath,
       });
       if (startupError) throw startupError;
 
@@ -186,7 +191,29 @@ function FounderOnboarding() {
               />
             </div>
 
+            <div className="space-y-6 rounded-xl border border-border bg-muted/20 p-5">
+              <PitchFileUpload
+                label="Pitch deck"
+                hint="PDF only, up to 20MB. Only you can see it until you publish."
+                bucket="decks"
+                accept="application/pdf"
+                maxBytes={20 * 1024 * 1024}
+                value={deckPath}
+                onUploaded={setDeckPath}
+              />
+              <PitchFileUpload
+                label="Pitch video"
+                hint="Any common video format, up to 100MB. Keep it under 2 minutes."
+                bucket="videos"
+                accept="video/*"
+                maxBytes={100 * 1024 * 1024}
+                value={videoPath}
+                onUploaded={setVideoPath}
+              />
+            </div>
+
             <Button type="submit" className="w-full" disabled={loading || !sector || !stage}>
+
               {loading ? "Saving…" : "Publish startup profile"}
             </Button>
           </form>
