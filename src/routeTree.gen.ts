@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDiscoverRouteImport } from './routes/_authenticated/discover'
 import { Route as AuthenticatedOnboardingFounderRouteImport } from './routes/_authenticated/onboarding.founder'
 import { Route as AuthenticatedOnboardingInvestorRouteImport } from './routes/_authenticated/onboarding.investor'
 
@@ -35,6 +36,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDiscoverRoute = AuthenticatedDiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOnboardingFounderRoute =
   AuthenticatedOnboardingFounderRouteImport.update({
     id: '/onboarding/founder',
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/discover': typeof AuthenticatedDiscoverRoute
   '/onboarding/founder': typeof AuthenticatedOnboardingFounderRoute
   '/onboarding/investor': typeof AuthenticatedOnboardingInvestorRoute
 }
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/discover': typeof AuthenticatedDiscoverRoute
   '/onboarding/founder': typeof AuthenticatedOnboardingFounderRoute
   '/onboarding/investor': typeof AuthenticatedOnboardingInvestorRoute
 }
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/discover': typeof AuthenticatedDiscoverRoute
   '/_authenticated/onboarding/founder': typeof AuthenticatedOnboardingFounderRoute
   '/_authenticated/onboarding/investor': typeof AuthenticatedOnboardingInvestorRoute
 }
@@ -77,6 +86,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/dashboard'
+    | '/discover'
     | '/onboarding/founder'
     | '/onboarding/investor'
   fileRoutesByTo: FileRoutesByTo
@@ -84,6 +94,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/dashboard'
+    | '/discover'
     | '/onboarding/founder'
     | '/onboarding/investor'
   id:
@@ -92,6 +103,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/dashboard'
+    | '/_authenticated/discover'
     | '/_authenticated/onboarding/founder'
     | '/_authenticated/onboarding/investor'
   fileRoutesById: FileRoutesById
@@ -132,6 +144,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/discover': {
+      id: '/_authenticated/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof AuthenticatedDiscoverRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/onboarding/founder': {
       id: '/_authenticated/onboarding/founder'
       path: '/onboarding/founder'
@@ -151,12 +170,14 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDiscoverRoute: typeof AuthenticatedDiscoverRoute
   AuthenticatedOnboardingFounderRoute: typeof AuthenticatedOnboardingFounderRoute
   AuthenticatedOnboardingInvestorRoute: typeof AuthenticatedOnboardingInvestorRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDiscoverRoute: AuthenticatedDiscoverRoute,
   AuthenticatedOnboardingFounderRoute: AuthenticatedOnboardingFounderRoute,
   AuthenticatedOnboardingInvestorRoute: AuthenticatedOnboardingInvestorRoute,
 }
@@ -172,3 +193,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
