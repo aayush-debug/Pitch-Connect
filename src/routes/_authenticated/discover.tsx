@@ -135,6 +135,63 @@ function Discover() {
     },
   });
 
+  const matched = useQuery({
+    queryKey: ["matched-startups", investorId],
+    enabled: !!investorId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("matches")
+        .select(`id, created_at, startups!inner(${SELECT_COLS}, deck_url)`)
+        .eq("investor_id", investorId!)
+        .eq("status", "matched")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      const rows = (data ?? []).map((m) => m.startups);
+      const withVideos = await withSignedVideos(
+        rows.map(({ deck_url: _deck, ...rest }) => rest),
+      );
+      const deckPaths = rows.map((r) => r.deck_url).filter((p): p is string => !!p);
+      const deckByPath = new Map<string, string>();
+      if (deckPaths.length > 0) {
+        const { data: signed } = await supabase.storage
+          .from("decks")
+          .createSignedUrls(deckPaths, 60 * 60);
+        signed?.forEach((entry) => {
+          if (entry.path && entry.signedUrl) deckByPath.set(entry.path, entry.signedUrl);
+        });
+      }
+      return withVideos.map((deal, i) => ({
+        ...deal,
+        deckSignedUrl: rows[i]?.deck_url ? (deckByPath.get(rows[i]!.deck_url!) ?? null) : null,
+      }));
+    },
+  });
+
+  const notifications = useQuery({
+    queryKey: ["notifications", profile?.userId],
+    enabled: !!profile?.userId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("notifications")
+        .select("id, title, body, read, created_at")
+        .eq("read", false)
+        .order("created_at", { ascending: false })
+        .limit(10);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const dismissNotifications = useMutation({
+    mutationFn: async () => {
+      const ids = (notifications.data ?? []).map((n) => n.id);
+      if (ids.length === 0) return;
+      const { error } = await supabase.from("notifications").update({ read: true }).in("id", ids);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications"] }),
+  });
+
   const decide = useMutation({
     mutationFn: async ({
       startupId,
