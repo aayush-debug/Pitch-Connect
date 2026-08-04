@@ -268,11 +268,42 @@ function Discover() {
           </Card>
         )}
 
+        {(notifications.data?.length ?? 0) > 0 && (
+          <Card className="mt-7 border-primary/40 bg-primary/5 p-6">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="text-sm font-semibold text-primary">New matches</h2>
+                <ul className="mt-2 grid gap-2">
+                  {notifications.data?.map((n) => (
+                    <li key={n.id} className="text-sm">
+                      <span className="font-medium">{n.title}</span>
+                      {n.body ? (
+                        <span className="text-muted-foreground"> — {n.body}</span>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => dismissNotifications.mutate()}
+                disabled={dismissNotifications.isPending}
+              >
+                Mark read
+              </Button>
+            </div>
+          </Card>
+        )}
+
         <Tabs value={tab} onValueChange={setTab} className="mt-8">
           <TabsList>
             <TabsTrigger value="feed">Feed</TabsTrigger>
             <TabsTrigger value="saved">
               Saved{saved.data?.length ? ` (${saved.data.length})` : ""}
+            </TabsTrigger>
+            <TabsTrigger value="matched">
+              Matched{matched.data?.length ? ` (${matched.data.length})` : ""}
             </TabsTrigger>
           </TabsList>
 
@@ -303,6 +334,18 @@ function Discover() {
             )}
             {saved.data?.map((deal) => (
               <DealCard key={deal.id} deal={deal} savedView />
+            ))}
+          </TabsContent>
+
+          <TabsContent value="matched" className="mt-6 grid gap-5">
+            {matched.isLoading && <Skeleton className="h-64 w-full" />}
+            {matched.data?.length === 0 && (
+              <Card className="border-border bg-card p-6 text-sm text-muted-foreground">
+                No accepted matches yet. Founders unlock their data room once they accept you.
+              </Card>
+            )}
+            {matched.data?.map((deal) => (
+              <DealCard key={deal.id} deal={deal} matchedView />
             ))}
           </TabsContent>
         </Tabs>
