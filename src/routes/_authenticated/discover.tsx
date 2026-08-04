@@ -360,12 +360,14 @@ function DealCard({
   onPass,
   busy,
   savedView,
+  matchedView,
 }: {
   deal: Deal;
   onSave?: () => void;
   onPass?: () => void;
   busy?: boolean;
   savedView?: boolean;
+  matchedView?: boolean;
 }) {
   return (
     <Card className="overflow-hidden border-border bg-card">
@@ -382,6 +384,7 @@ function DealCard({
         <div className="mt-4 flex flex-wrap gap-2">
           <Badge variant="secondary">{deal.sector}</Badge>
           <Badge variant="secondary">{deal.stage}</Badge>
+          {matchedView && <Badge>Matched</Badge>}
         </div>
       </div>
 
@@ -398,10 +401,43 @@ function DealCard({
         </div>
       )}
 
+      {matchedView && (
+        <div className="border-b border-border p-6">
+          <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+            Data room · pitch deck
+          </h3>
+          {deal.deckSignedUrl ? (
+            <>
+              <iframe
+                src={deal.deckSignedUrl}
+                title={`${deal.name} pitch deck`}
+                className="mt-3 h-[520px] w-full rounded-lg border border-border bg-muted/20"
+              />
+              <a
+                href={deal.deckSignedUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-block text-sm text-primary hover:underline"
+              >
+                Open deck in a new tab
+              </a>
+            </>
+          ) : (
+            <p className="mt-2 text-sm text-muted-foreground">
+              This founder hasn't uploaded a pitch deck yet.
+            </p>
+          )}
+        </div>
+      )}
+
       <div className="flex items-center justify-between gap-3 p-6">
         {savedView ? (
           <p className="text-xs text-muted-foreground">
-            Saved — pitch deck stays private until the founder shares it.
+            Saved — pitch deck stays private until the founder accepts the match.
+          </p>
+        ) : matchedView ? (
+          <p className="text-xs text-muted-foreground">
+            Matched — the founder unlocked their data room for you.
           </p>
         ) : (
           <>
