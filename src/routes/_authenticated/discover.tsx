@@ -41,6 +41,7 @@ type Deal = {
   ask_amount: number | null;
   video_url: string | null;
   videoSignedUrl: string | null;
+  deckSignedUrl?: string | null;
 };
 
 async function withSignedVideos(
