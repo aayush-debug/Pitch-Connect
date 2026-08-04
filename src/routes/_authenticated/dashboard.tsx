@@ -139,9 +139,14 @@ function Dashboard() {
                 <p className="text-xs font-medium tracking-wide text-primary uppercase">Founder</p>
                 <h1 className="mt-1 text-3xl font-bold">Hi {profile.founder.name}</h1>
               </div>
-              <Button asChild>
-                <Link to="/onboarding/founder">Add a startup</Link>
-              </Button>
+              <div className="flex gap-3">
+                <Button variant="secondary" asChild>
+                  <Link to="/requests">Investor requests</Link>
+                </Button>
+                <Button asChild>
+                  <Link to="/onboarding/founder">Add a startup</Link>
+                </Button>
+              </div>
             </div>
 
             <div className="mt-7 grid gap-4">

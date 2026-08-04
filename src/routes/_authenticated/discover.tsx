@@ -41,6 +41,7 @@ type Deal = {
   ask_amount: number | null;
   video_url: string | null;
   videoSignedUrl: string | null;
+  deckSignedUrl?: string | null;
 };
 
 async function withSignedVideos(
@@ -134,6 +135,63 @@ function Discover() {
     },
   });
 
+  const matched = useQuery({
+    queryKey: ["matched-startups", investorId],
+    enabled: !!investorId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("matches")
+        .select(`id, created_at, startups!inner(${SELECT_COLS}, deck_url)`)
+        .eq("investor_id", investorId!)
+        .eq("status", "matched")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      const rows = (data ?? []).map((m) => m.startups);
+      const withVideos = await withSignedVideos(
+        rows.map(({ deck_url: _deck, ...rest }) => rest),
+      );
+      const deckPaths = rows.map((r) => r.deck_url).filter((p): p is string => !!p);
+      const deckByPath = new Map<string, string>();
+      if (deckPaths.length > 0) {
+        const { data: signed } = await supabase.storage
+          .from("decks")
+          .createSignedUrls(deckPaths, 60 * 60);
+        signed?.forEach((entry) => {
+          if (entry.path && entry.signedUrl) deckByPath.set(entry.path, entry.signedUrl);
+        });
+      }
+      return withVideos.map((deal, i) => ({
+        ...deal,
+        deckSignedUrl: rows[i]?.deck_url ? (deckByPath.get(rows[i]!.deck_url!) ?? null) : null,
+      }));
+    },
+  });
+
+  const notifications = useQuery({
+    queryKey: ["notifications", profile?.userId],
+    enabled: !!profile?.userId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("notifications")
+        .select("id, title, body, read, created_at")
+        .eq("read", false)
+        .order("created_at", { ascending: false })
+        .limit(10);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const dismissNotifications = useMutation({
+    mutationFn: async () => {
+      const ids = (notifications.data ?? []).map((n) => n.id);
+      if (ids.length === 0) return;
+      const { error } = await supabase.from("notifications").update({ read: true }).in("id", ids);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications"] }),
+  });
+
   const decide = useMutation({
     mutationFn: async ({
       startupId,
@@ -210,11 +268,42 @@ function Discover() {
           </Card>
         )}
 
+        {(notifications.data?.length ?? 0) > 0 && (
+          <Card className="mt-7 border-primary/40 bg-primary/5 p-6">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="text-sm font-semibold text-primary">New matches</h2>
+                <ul className="mt-2 grid gap-2">
+                  {notifications.data?.map((n) => (
+                    <li key={n.id} className="text-sm">
+                      <span className="font-medium">{n.title}</span>
+                      {n.body ? (
+                        <span className="text-muted-foreground"> — {n.body}</span>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => dismissNotifications.mutate()}
+                disabled={dismissNotifications.isPending}
+              >
+                Mark read
+              </Button>
+            </div>
+          </Card>
+        )}
+
         <Tabs value={tab} onValueChange={setTab} className="mt-8">
           <TabsList>
             <TabsTrigger value="feed">Feed</TabsTrigger>
             <TabsTrigger value="saved">
               Saved{saved.data?.length ? ` (${saved.data.length})` : ""}
+            </TabsTrigger>
+            <TabsTrigger value="matched">
+              Matched{matched.data?.length ? ` (${matched.data.length})` : ""}
             </TabsTrigger>
           </TabsList>
 
@@ -247,6 +336,18 @@ function Discover() {
               <DealCard key={deal.id} deal={deal} savedView />
             ))}
           </TabsContent>
+
+          <TabsContent value="matched" className="mt-6 grid gap-5">
+            {matched.isLoading && <Skeleton className="h-64 w-full" />}
+            {matched.data?.length === 0 && (
+              <Card className="border-border bg-card p-6 text-sm text-muted-foreground">
+                No accepted matches yet. Founders unlock their data room once they accept you.
+              </Card>
+            )}
+            {matched.data?.map((deal) => (
+              <DealCard key={deal.id} deal={deal} matchedView />
+            ))}
+          </TabsContent>
         </Tabs>
       </div>
     </main>
@@ -259,12 +360,14 @@ function DealCard({
   onPass,
   busy,
   savedView,
+  matchedView,
 }: {
   deal: Deal;
   onSave?: () => void;
   onPass?: () => void;
   busy?: boolean;
   savedView?: boolean;
+  matchedView?: boolean;
 }) {
   return (
     <Card className="overflow-hidden border-border bg-card">
@@ -281,6 +384,7 @@ function DealCard({
         <div className="mt-4 flex flex-wrap gap-2">
           <Badge variant="secondary">{deal.sector}</Badge>
           <Badge variant="secondary">{deal.stage}</Badge>
+          {matchedView && <Badge>Matched</Badge>}
         </div>
       </div>
 
@@ -297,10 +401,43 @@ function DealCard({
         </div>
       )}
 
+      {matchedView && (
+        <div className="border-b border-border p-6">
+          <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+            Data room · pitch deck
+          </h3>
+          {deal.deckSignedUrl ? (
+            <>
+              <iframe
+                src={deal.deckSignedUrl}
+                title={`${deal.name} pitch deck`}
+                className="mt-3 h-[520px] w-full rounded-lg border border-border bg-muted/20"
+              />
+              <a
+                href={deal.deckSignedUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-block text-sm text-primary hover:underline"
+              >
+                Open deck in a new tab
+              </a>
+            </>
+          ) : (
+            <p className="mt-2 text-sm text-muted-foreground">
+              This founder hasn't uploaded a pitch deck yet.
+            </p>
+          )}
+        </div>
+      )}
+
       <div className="flex items-center justify-between gap-3 p-6">
         {savedView ? (
           <p className="text-xs text-muted-foreground">
-            Saved — pitch deck stays private until the founder shares it.
+            Saved — pitch deck stays private until the founder accepts the match.
+          </p>
+        ) : matchedView ? (
+          <p className="text-xs text-muted-foreground">
+            Matched — the founder unlocked their data room for you.
           </p>
         ) : (
           <>

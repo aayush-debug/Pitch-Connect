@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDiscoverRouteImport } from './routes/_authenticated/discover'
+import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
 import { Route as AuthenticatedOnboardingFounderRouteImport } from './routes/_authenticated/onboarding.founder'
 import { Route as AuthenticatedOnboardingInvestorRouteImport } from './routes/_authenticated/onboarding.investor'
 
@@ -41,6 +42,11 @@ const AuthenticatedDiscoverRoute = AuthenticatedDiscoverRouteImport.update({
   path: '/discover',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedRequestsRoute = AuthenticatedRequestsRouteImport.update({
+  id: '/requests',
+  path: '/requests',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOnboardingFounderRoute =
   AuthenticatedOnboardingFounderRouteImport.update({
     id: '/onboarding/founder',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/discover': typeof AuthenticatedDiscoverRoute
+  '/requests': typeof AuthenticatedRequestsRoute
   '/onboarding/founder': typeof AuthenticatedOnboardingFounderRoute
   '/onboarding/investor': typeof AuthenticatedOnboardingInvestorRoute
 }
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/discover': typeof AuthenticatedDiscoverRoute
+  '/requests': typeof AuthenticatedRequestsRoute
   '/onboarding/founder': typeof AuthenticatedOnboardingFounderRoute
   '/onboarding/investor': typeof AuthenticatedOnboardingInvestorRoute
 }
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/discover': typeof AuthenticatedDiscoverRoute
+  '/_authenticated/requests': typeof AuthenticatedRequestsRoute
   '/_authenticated/onboarding/founder': typeof AuthenticatedOnboardingFounderRoute
   '/_authenticated/onboarding/investor': typeof AuthenticatedOnboardingInvestorRoute
 }
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/discover'
+    | '/requests'
     | '/onboarding/founder'
     | '/onboarding/investor'
   fileRoutesByTo: FileRoutesByTo
@@ -95,6 +105,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/discover'
+    | '/requests'
     | '/onboarding/founder'
     | '/onboarding/investor'
   id:
@@ -104,6 +115,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/dashboard'
     | '/_authenticated/discover'
+    | '/_authenticated/requests'
     | '/_authenticated/onboarding/founder'
     | '/_authenticated/onboarding/investor'
   fileRoutesById: FileRoutesById
@@ -151,6 +163,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDiscoverRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/requests': {
+      id: '/_authenticated/requests'
+      path: '/requests'
+      fullPath: '/requests'
+      preLoaderRoute: typeof AuthenticatedRequestsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/onboarding/founder': {
       id: '/_authenticated/onboarding/founder'
       path: '/onboarding/founder'
@@ -171,6 +190,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDiscoverRoute: typeof AuthenticatedDiscoverRoute
+  AuthenticatedRequestsRoute: typeof AuthenticatedRequestsRoute
   AuthenticatedOnboardingFounderRoute: typeof AuthenticatedOnboardingFounderRoute
   AuthenticatedOnboardingInvestorRoute: typeof AuthenticatedOnboardingInvestorRoute
 }
@@ -178,6 +198,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDiscoverRoute: AuthenticatedDiscoverRoute,
+  AuthenticatedRequestsRoute: AuthenticatedRequestsRoute,
   AuthenticatedOnboardingFounderRoute: AuthenticatedOnboardingFounderRoute,
   AuthenticatedOnboardingInvestorRoute: AuthenticatedOnboardingInvestorRoute,
 }
