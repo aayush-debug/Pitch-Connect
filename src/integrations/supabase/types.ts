@@ -133,6 +133,36 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          link: string | null
+          read: boolean
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       startups: {
         Row: {
           ask_amount: number | null
@@ -185,7 +215,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      decide_match: {
+        Args: { _accept: boolean; _match_id: string }
+        Returns: {
+          created_at: string
+          id: string
+          investor_id: string
+          startup_id: string
+          status: Database["public"]["Enums"]["match_status"]
+        }
+        SetofOptions: {
+          from: "*"
+          to: "matches"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       match_status: "pending" | "matched" | "passed"
