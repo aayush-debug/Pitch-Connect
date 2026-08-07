@@ -35,6 +35,50 @@ export type Database = {
         }
         Relationships: []
       }
+      investor_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          id: string
+          investor_id: string
+          order_id: string
+          payment_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          id?: string
+          investor_id: string
+          order_id: string
+          payment_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          investor_id?: string
+          order_id?: string
+          payment_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_payments_investor_id_fkey"
+            columns: ["investor_id"]
+            isOneToOne: false
+            referencedRelation: "investors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       investor_preferences: {
         Row: {
           created_at: string
@@ -78,18 +122,24 @@ export type Database = {
           created_at: string
           id: string
           name: string
+          subscription_expires_at: string | null
+          subscription_status: Database["public"]["Enums"]["subscription_status"]
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
           name: string
+          subscription_expires_at?: string | null
+          subscription_status?: Database["public"]["Enums"]["subscription_status"]
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
           name?: string
+          subscription_expires_at?: string | null
+          subscription_status?: Database["public"]["Enums"]["subscription_status"]
           user_id?: string
         }
         Relationships: []
@@ -234,6 +284,7 @@ export type Database = {
     }
     Enums: {
       match_status: "pending" | "matched" | "passed"
+      subscription_status: "inactive" | "active" | "expired"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -362,6 +413,7 @@ export const Constants = {
   public: {
     Enums: {
       match_status: ["pending", "matched", "passed"],
+      subscription_status: ["inactive", "active", "expired"],
     },
   },
 } as const
