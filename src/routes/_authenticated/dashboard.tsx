@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useProfile } from "@/hooks/use-profile";
+import { useProfile, hasActiveSubscription } from "@/hooks/use-profile";
 import { formatMoney } from "@/lib/letspitch";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -216,6 +216,36 @@ function Dashboard() {
                 .
               </Card>
             )}
+
+            <Card className="mt-4 border-border bg-card p-6">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-sm font-semibold text-muted-foreground">Membership</h2>
+                  <p className="mt-1 text-sm">
+                    {hasActiveSubscription(profile.investor) ? (
+                      <>
+                        Active — renews{" "}
+                        {new Date(
+                          profile.investor.subscription_expires_at!,
+                        ).toLocaleDateString()}
+                      </>
+                    ) : (
+                      "Not active — subscribe to open the discovery feed."
+                    )}
+                  </p>
+                </div>
+                <Button
+                  variant={hasActiveSubscription(profile.investor) ? "secondary" : "default"}
+                  asChild
+                >
+                  <Link to="/subscribe">
+                    {hasActiveSubscription(profile.investor) ? "Manage" : "Subscribe"}
+                  </Link>
+                </Button>
+              </div>
+            </Card>
+
+
 
             <div className="mt-10 flex flex-wrap items-end justify-between gap-3">
               <div>

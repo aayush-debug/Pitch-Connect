@@ -3,7 +3,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useProfile } from "@/hooks/use-profile";
+import { useProfile, hasActiveSubscription } from "@/hooks/use-profile";
 import { formatMoney } from "@/lib/letspitch";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -65,7 +65,8 @@ const SELECT_COLS = "id, name, one_liner, sector, stage, ask_amount, video_url";
 
 function Discover() {
   const { data: profile, isLoading: profileLoading } = useProfile();
-  const investorId = profile?.investor?.id ?? null;
+  const subscribed = hasActiveSubscription(profile?.investor);
+  const investorId = subscribed ? (profile?.investor?.id ?? null) : null;
   const queryClient = useQueryClient();
   const [tab, setTab] = useState("feed");
 
@@ -240,6 +241,40 @@ function Discover() {
       </main>
     );
   }
+
+  if (!subscribed) {
+    const expired = !!profile.investor.subscription_expires_at;
+    return (
+      <main className="relative min-h-screen">
+        <div className="pointer-events-none absolute inset-0 bg-grid opacity-40" />
+        <div className="relative mx-auto max-w-2xl px-6 py-14">
+          <Card className="border-border bg-card p-8">
+            <p className="text-xs font-medium tracking-wide text-primary uppercase">
+              Membership required
+            </p>
+            <h1 className="mt-1 text-2xl font-bold">
+              {expired ? "Your membership has expired" : "Subscribe to see deal flow"}
+            </h1>
+            <p className="mt-3 text-sm text-muted-foreground">
+              {expired
+                ? "Renew your monthly membership to reopen the discovery feed. Your saved startups and accepted matches are untouched."
+                : "The discovery feed is part of the LetsPitch investor membership — one monthly plan, unlimited deal flow."}
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Button asChild>
+                <Link to="/subscribe">{expired ? "Renew membership" : "View plan"}</Link>
+              </Button>
+              <Button variant="secondary" asChild>
+                <Link to="/dashboard">Back to dashboard</Link>
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </main>
+    );
+  }
+
+
 
   return (
     <main className="relative min-h-screen">
