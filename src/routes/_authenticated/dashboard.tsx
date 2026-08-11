@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useProfile } from "@/hooks/use-profile";
+import { useProfile, hasActiveSubscription } from "@/hooks/use-profile";
 import { formatMoney } from "@/lib/letspitch";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
