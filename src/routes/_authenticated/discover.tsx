@@ -3,7 +3,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useProfile } from "@/hooks/use-profile";
+import { useProfile, hasActiveSubscription } from "@/hooks/use-profile";
 import { formatMoney } from "@/lib/letspitch";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -65,7 +65,8 @@ const SELECT_COLS = "id, name, one_liner, sector, stage, ask_amount, video_url";
 
 function Discover() {
   const { data: profile, isLoading: profileLoading } = useProfile();
-  const investorId = profile?.investor?.id ?? null;
+  const subscribed = hasActiveSubscription(profile?.investor);
+  const investorId = subscribed ? (profile?.investor?.id ?? null) : null;
   const queryClient = useQueryClient();
   const [tab, setTab] = useState("feed");
 
