@@ -1,44 +1,69 @@
-# Pitch Perfect Connect
 
-Build a two-sided web app called LetsPitch, using Supabase for the database and authentication.
+# Pitch Connect
 
-There are two user types: Founders and Investors. On signup, ask the user to pick which type they are, and route them to a different onboarding flow depending on the choice.
+> Curated deal flow for investors. Free, direct access for founders.
 
-Create these Supabase tables:
+Pitch Connect is a discovery platform that matches early-stage startups with investors based on actual fit — sector, stage, and ticket size — instead of generic cold pitches and inbox noise.
 
-- founders (id, user_id, name, created_at)
+## The problem
 
-- startups (id, founder_id, name, one_liner, sector, stage, ask_amount, deck_url, video_url, created_at)
+Founders send pitches into a void with no idea if the investor on the other end even invests in their space. Investors wade through decks that don't match their thesis at all. Pitch Connect narrows that gap: investors set what they're actually looking for, and only see startups that match.
 
-- investors (id, user_id, name, created_at)
+## How it works
 
-- investor_preferences (id, investor_id, sectors[], stages[], min_ticket, max_ticket)
+**For founders**
+- Create a free profile: one-liner, sector, stage, funding ask
+- Upload a short pitch video and your deck
+- Get discovered by investors actively looking in your space — no subscription required
+- When an investor shows interest, review their profile and choose to accept or decline the match
 
-- matches (id, startup_id, investor_id, status, created_at) -- status is one of: pending, matched, passed
+**For investors**
+- Subscribe for access to a filtered discovery feed
+- Set preferences (sector, stage, ticket size) so the feed only shows relevant startups
+- Save startups you're interested in; get full data room access once the founder accepts the match
+- Use the AI Q&A assistant to ask questions about a startup, grounded in their actual deck and data
 
-Founder onboarding: after signup, let them create a startup profile with name, one-liner, sector, stage, and ask amount (skip file uploads for now, we'll add those next).
+## Core features
 
-Investor onboarding: after signup, let them set their preferences (sectors, stages, ticket size range).
+- **Investor Preferences Engine** — filters the discovery feed to each investor's stated sector, stage, and ticket-size fit
+- **AI-generated startup summaries** — auto-generated via Claude API from each uploaded deck, so every profile has a clean, consistent quick-read regardless of deck quality
+- **Founder Credibility Score** — a trust signal for investors browsing the feed
+- **Gated Data Room** — full deck and detailed startup data unlock only after a mutual match
+- **Deal Room** — where matched founders and investors move a conversation toward a real deal
+- **Syndicate feature** — lets multiple smaller investors pool into a single check on a startup they're all interested in
+- **Async AI Q&A** — investors can ask a startup-specific question and get an answer grounded only in the founder's actual materials
 
-Use Supabase Auth for login/signup (email + password is fine for now).
+## Tech stack
 
-This project was built with [Lovable](https://lovable.dev).
+- **Frontend & app**: Next.js
+- **Database, auth, storage**: Supabase
+- **Payments**: Razorpay (investor subscriptions, founder success fees)
+- **AI layer**: Claude API (deck summarization, Q&A assistant)
+- Built with Lovable; Supabase connected via MCP through the Antigravity IDE for AI-assisted development
 
-## Build with Lovable
+## Revenue model
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/cce76e23-af9b-4614-8315-4bd8ebcbf072).
+- **Founders**: free to create a profile and get discovered; a success fee applies only if funding is closed through a platform-sourced match
+- **Investors**: monthly/annual subscription for access to the discovery feed and data rooms
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+## Project status
 
-## Development
+Currently in build/launch phase — onboarding the first cohort of founders and investors ahead of public launch. Not yet accepting live payments; Razorpay is running in test mode until initial usage is validated.
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+## A note on framing
 
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+Despite the swipe-style discovery mechanic, Pitch Connect is not positioned or described as a dating app anywhere in product copy or communications — the language used throughout is professional and B2B ("discover," "fit score," "request intro").
+
+## Roadmap
+
+- [ ] Complete Row Level Security review across all Supabase tables
+- [ ] Connect custom domain
+- [ ] Switch Razorpay to live mode after KYC
+- [ ] Add Privacy Policy and Terms of Service (including success-fee attribution terms)
+- [ ] Onboard first 10 founder profiles
+- [ ] Onboard first 5-8 investors
+- [ ] Public launch
+
+## Contact
+
+Built by Aayush, Computer Engineering student, University of Mumbai.
