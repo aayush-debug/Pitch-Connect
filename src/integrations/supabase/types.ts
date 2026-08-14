@@ -213,8 +213,87 @@ export type Database = {
         }
         Relationships: []
       }
+      startup_deck_text: {
+        Row: {
+          content: string
+          created_at: string
+          startup_id: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          startup_id: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          startup_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "startup_deck_text_startup_id_fkey"
+            columns: ["startup_id"]
+            isOneToOne: true
+            referencedRelation: "startups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      startup_questions: {
+        Row: {
+          answer: string | null
+          created_at: string
+          id: string
+          investor_id: string
+          question: string
+          startup_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          answer?: string | null
+          created_at?: string
+          id?: string
+          investor_id: string
+          question: string
+          startup_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          answer?: string | null
+          created_at?: string
+          id?: string
+          investor_id?: string
+          question?: string
+          startup_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "startup_questions_investor_id_fkey"
+            columns: ["investor_id"]
+            isOneToOne: false
+            referencedRelation: "investors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "startup_questions_startup_id_fkey"
+            columns: ["startup_id"]
+            isOneToOne: false
+            referencedRelation: "startups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       startups: {
         Row: {
+          ai_summary: string | null
+          ai_summary_status: string
           ask_amount: number | null
           created_at: string
           deck_url: string | null
@@ -227,6 +306,8 @@ export type Database = {
           video_url: string | null
         }
         Insert: {
+          ai_summary?: string | null
+          ai_summary_status?: string
           ask_amount?: number | null
           created_at?: string
           deck_url?: string | null
@@ -239,6 +320,8 @@ export type Database = {
           video_url?: string | null
         }
         Update: {
+          ai_summary?: string | null
+          ai_summary_status?: string
           ask_amount?: number | null
           created_at?: string
           deck_url?: string | null
