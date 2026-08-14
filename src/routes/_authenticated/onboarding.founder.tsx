@@ -1,5 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
+import { generateDeckSummary } from "@/lib/pitch-ai.functions";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -42,6 +44,7 @@ function FounderOnboarding() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: profile } = useProfile();
+  const summarize = useServerFn(generateDeckSummary);
 
   const [founderName, setFounderName] = useState("");
   const [name, setName] = useState("");
