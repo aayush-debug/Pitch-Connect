@@ -5,6 +5,7 @@ import { useProfile, hasActiveSubscription } from "@/hooks/use-profile";
 import { formatMoney } from "@/lib/letspitch";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { StartupAiSummary } from "@/components/startup-ai-summary";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 
