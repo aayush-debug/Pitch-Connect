@@ -72,20 +72,39 @@ function FounderOnboarding() {
         founderId = data.id;
       }
 
-      const { error: startupError } = await supabase.from("startups").insert({
-        founder_id: founderId,
-        name,
-        one_liner: oneLiner,
-        sector,
-        stage,
-        ask_amount: ask ? Number(ask) : null,
-        deck_url: deckPath,
-        video_url: videoPath,
-      });
+      const { data: startup, error: startupError } = await supabase
+        .from("startups")
+        .insert({
+          founder_id: founderId,
+          name,
+          one_liner: oneLiner,
+          sector,
+          stage,
+          ask_amount: ask ? Number(ask) : null,
+          deck_url: deckPath,
+          video_url: videoPath,
+        })
+        .select("id")
+        .single();
       if (startupError) throw startupError;
 
       await queryClient.invalidateQueries({ queryKey: profileQueryKey });
       toast.success("Startup profile created");
+
+      if (deckPath) {
+        toast.info("Writing your AI summary from the deck…");
+        try {
+          await summarize({ data: { startupId: startup.id } });
+          toast.success("AI summary ready");
+        } catch (error) {
+          toast.error(
+            error instanceof Error
+              ? `AI summary skipped: ${error.message}`
+              : "AI summary could not be generated",
+          );
+        }
+      }
+
       navigate({ to: "/dashboard" });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not save your startup");
