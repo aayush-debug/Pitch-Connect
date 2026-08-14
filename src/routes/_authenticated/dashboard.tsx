@@ -41,7 +41,9 @@ function Dashboard() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("startups")
-        .select("id, name, one_liner, sector, stage, ask_amount, created_at")
+        .select(
+          "id, name, one_liner, sector, stage, ask_amount, created_at, deck_url, ai_summary, ai_summary_status",
+        )
         .eq("founder_id", founderId!)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -171,6 +173,15 @@ function Dashboard() {
                     <Badge variant="secondary">{s.sector}</Badge>
                     <Badge variant="secondary">{s.stage}</Badge>
                   </div>
+                  <StartupAiSummary
+                    startupId={s.id}
+                    hasDeck={!!s.deck_url}
+                    summary={s.ai_summary}
+                    status={s.ai_summary_status}
+                    onDone={() =>
+                      queryClient.invalidateQueries({ queryKey: ["my-startups"] })
+                    }
+                  />
                 </Card>
               ))}
             </div>
