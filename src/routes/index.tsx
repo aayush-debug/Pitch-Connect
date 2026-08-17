@@ -366,7 +366,7 @@ const THESIS = [
   ["Revenue", "₹5L+ MRR"],
   ["Growth", "10%+ MoM"],
   ["Risk appetite", "Moderate"],
-];
+] as const;
 
 const MATCH_REASONS = [
   "Sector match",
@@ -628,7 +628,7 @@ function QuickView() {
     ["Customers", "126"],
     ["Funding sought", "₹75L"],
     ["Runway", "14 months"],
-  ];
+  ] as const;
   const chapters = [
     ["0:00", "Problem"],
     ["2:00", "Solution"],
@@ -823,7 +823,7 @@ function Rooms() {
     ["Product information", "Available"],
     ["Market research", "Available"],
     ["Founder information", "Verified"],
-  ];
+  ] as const;
   const dealTabs = ["Messages", "Documents", "Due diligence", "Meetings", "Financials", "Deal info"];
 
   return (
@@ -947,7 +947,7 @@ function InvestorTransparency() {
     ["Investments", "18"],
     ["Recent activity", "3 in the last quarter"],
     ["Avg. response time", "36 hours"],
-  ];
+  ] as const;
   return (
     <section className="border-y border-border/60 bg-card/20">
       <div className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
