@@ -58,7 +58,7 @@ export const Route = createFileRoute("/")({
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+    <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-card/60 px-3 py-1 tech-label backdrop-blur-md">
       {children}
     </p>
   );
@@ -188,15 +188,18 @@ function Navbar() {
 function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 aurora" />
       <div className="pointer-events-none absolute inset-0 bg-grid opacity-60" />
       <div className="pointer-events-none absolute inset-0 radial-fade" />
+      <div className="pointer-events-none absolute inset-0 scanlines" />
 
       <div className="relative mx-auto max-w-4xl px-6 pt-20 pb-16 text-center sm:pt-28">
         <Reveal>
-          <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
+          <p className="glow-ring mb-6 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/70 px-3 py-1 tech-label backdrop-blur-md">
             <Zap className="size-3.5 text-primary" /> Two-sided fundraising, minus the cold emails
           </p>
         </Reveal>
+
 
         <Reveal delay={60}>
           <h1 className="font-display text-4xl leading-[1.05] font-bold sm:text-6xl">

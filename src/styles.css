@@ -92,43 +92,161 @@
     linear-gradient(to bottom, var(--border) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black, transparent 75%);
+  animation: grid-drift 26s linear infinite;
 }
 
 @utility text-gradient {
-  background-image: linear-gradient(100deg, var(--primary), var(--accent));
+  background-image: linear-gradient(
+    100deg,
+    var(--primary),
+    var(--accent),
+    color-mix(in oklab, var(--primary) 55%, white),
+    var(--primary)
+  );
+  background-size: 260% 100%;
   background-clip: text;
   color: transparent;
+  animation: sheen 9s ease-in-out infinite;
 }
 
 @utility surface-card {
-  background-color: color-mix(in oklab, var(--card) 78%, transparent);
-  border: 1px solid var(--border);
-  backdrop-filter: blur(10px);
+  position: relative;
+  background-image: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--card) 88%, transparent),
+    color-mix(in oklab, var(--background) 78%, transparent)
+  );
+  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  backdrop-filter: blur(14px) saturate(130%);
   transition:
-    border-color 250ms ease,
-    transform 250ms ease,
-    box-shadow 250ms ease;
+    border-color 300ms ease,
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 300ms ease;
+
+  /* holographic top edge */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    border-radius: inherit;
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--primary) 70%, transparent),
+      color-mix(in oklab, var(--accent) 70%, transparent),
+      transparent
+    );
+    opacity: 0.55;
+    transition: opacity 300ms ease;
+    pointer-events: none;
+  }
 
   &:hover {
-    border-color: color-mix(in oklab, var(--primary) 42%, var(--border));
-    box-shadow: 0 18px 50px -28px var(--glow);
-    transform: translateY(-2px);
+    border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--primary) 22%, transparent),
+      0 22px 60px -30px var(--glow);
+    transform: translateY(-3px);
+  }
+
+  &:hover::before {
+    opacity: 1;
   }
 }
 
 @utility glow-ring {
   box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--primary) 35%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--primary) 40%, transparent),
+    0 0 22px -6px color-mix(in oklab, var(--primary) 28%, transparent),
     0 24px 70px -30px var(--glow);
 }
 
 @utility radial-fade {
-  background-image: radial-gradient(
-    ellipse 60% 50% at 50% 0%,
-    color-mix(in oklab, var(--primary) 12%, transparent),
-    transparent 70%
-  );
+  background-image:
+    radial-gradient(
+      ellipse 55% 45% at 50% 0%,
+      color-mix(in oklab, var(--primary) 16%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 40% 40% at 85% 15%,
+      color-mix(in oklab, var(--accent) 12%, transparent),
+      transparent 70%
+    );
 }
+
+/* slow-moving aurora glow for hero-style sections */
+@utility aurora {
+  background-image:
+    radial-gradient(
+      40% 45% at 20% 20%,
+      color-mix(in oklab, var(--primary) 22%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      35% 40% at 80% 10%,
+      color-mix(in oklab, var(--accent) 20%, transparent),
+      transparent 70%
+    );
+  filter: blur(28px);
+  animation: aurora-shift 18s ease-in-out infinite alternate;
+}
+
+/* faint CRT scanlines for a technical, instrument-panel feel */
+@utility scanlines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--foreground) 4%, transparent) 0px,
+    color-mix(in oklab, var(--foreground) 4%, transparent) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  mask-image: linear-gradient(to bottom, black, transparent 85%);
+  opacity: 0.35;
+}
+
+/* monospace-flavoured technical label */
+@utility tech-label {
+  font-family: ui-monospace, "SFMono-Regular", "Menlo", monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--primary) 78%, var(--foreground));
+}
+
+@keyframes grid-drift {
+  from {
+    background-position:
+      0 0,
+      0 0;
+  }
+  to {
+    background-position:
+      56px 56px,
+      56px 56px;
+  }
+}
+
+@keyframes sheen {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes aurora-shift {
+  from {
+    transform: translate3d(-2%, -1%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(3%, 2%, 0) scale(1.08);
+  }
+}
+
 
 
 @layer base {
