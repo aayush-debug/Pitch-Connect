@@ -58,7 +58,7 @@ export const Route = createFileRoute("/")({
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+    <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-card/60 px-3 py-1 tech-label backdrop-blur-md">
       {children}
     </p>
   );
