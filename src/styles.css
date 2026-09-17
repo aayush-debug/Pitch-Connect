@@ -4,19 +4,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/*
- * LetsPitch design system — dark "pitch room" palette:
- * cool charcoal surfaces, deep sky primary, cyan accent.
- * All colors are oklch semantic tokens. Never hardcode colors in components.
- */
-
+/* VentureGate — institutional, quiet-luxury design system. */
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-sm: calc(var(--radius) - 1px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 1px);
+  --radius-xl: calc(var(--radius) + 2px);
+  --radius-2xl: calc(var(--radius) + 3px);
+  --radius-3xl: calc(var(--radius) + 4px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -45,214 +40,55 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
-  --shadow-glow: 0 0 0 1px var(--border), 0 24px 60px -24px var(--glow);
+  --font-display: "IBM Plex Serif", Georgia, serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
-  --radius: 0.75rem;
-  --background: oklch(0.17 0.015 250);
-  --foreground: oklch(0.96 0.008 250);
-  --card: oklch(0.22 0.017 250);
-  --card-foreground: oklch(0.96 0.008 250);
-  --popover: oklch(0.22 0.017 250);
-  --popover-foreground: oklch(0.96 0.008 250);
-  --primary: oklch(0.685 0.169 237.323);
-  --primary-foreground: oklch(0.16 0.04 240);
-  --secondary: oklch(0.27 0.02 240);
-  --secondary-foreground: oklch(0.96 0.008 240);
-  --muted: oklch(0.26 0.015 250);
-  --muted-foreground: oklch(0.72 0.015 240);
-  --accent: oklch(0.789 0.154 211.53);
-  --accent-foreground: oklch(0.16 0.04 240);
-  --destructive: oklch(0.62 0.21 25);
-  --destructive-foreground: oklch(0.98 0.005 90);
-  --border: oklch(0.32 0.018 240);
-  --input: oklch(0.3 0.018 240);
-  --ring: oklch(0.685 0.169 237.323);
-  --glow: oklch(0.685 0.169 237.323 / 18%);
-  --sidebar: oklch(0.2 0.017 250);
-  --sidebar-foreground: oklch(0.96 0.008 250);
-  --sidebar-primary: oklch(0.685 0.169 237.323);
-  --sidebar-primary-foreground: oklch(0.16 0.04 240);
-  --sidebar-accent: oklch(0.27 0.02 240);
-  --sidebar-accent-foreground: oklch(0.96 0.008 240);
-  --sidebar-border: oklch(0.32 0.018 240);
-  --sidebar-ring: oklch(0.685 0.169 237.323);
+  --radius: 0.1875rem;
+  --background: oklch(0.185 0.004 165);
+  --foreground: oklch(0.935 0.006 90);
+  --card: oklch(0.225 0.004 165);
+  --card-foreground: oklch(0.935 0.006 90);
+  --popover: oklch(0.225 0.004 165);
+  --popover-foreground: oklch(0.935 0.006 90);
+  --primary: oklch(0.79 0.035 85);
+  --primary-foreground: oklch(0.19 0.004 165);
+  --secondary: oklch(0.265 0.004 165);
+  --secondary-foreground: oklch(0.9 0.006 90);
+  --muted: oklch(0.25 0.004 165);
+  --muted-foreground: oklch(0.69 0.008 90);
+  --accent: oklch(0.31 0.008 85);
+  --accent-foreground: oklch(0.94 0.006 90);
+  --destructive: oklch(0.62 0.16 24);
+  --destructive-foreground: oklch(0.97 0.005 90);
+  --border: oklch(0.335 0.003 165);
+  --input: oklch(0.38 0.004 165);
+  --ring: oklch(0.79 0.035 85);
+  --sidebar: oklch(0.205 0.004 165);
+  --sidebar-foreground: oklch(0.935 0.006 90);
+  --sidebar-primary: oklch(0.79 0.035 85);
+  --sidebar-primary-foreground: oklch(0.19 0.004 165);
+  --sidebar-accent: oklch(0.265 0.004 165);
+  --sidebar-accent-foreground: oklch(0.9 0.006 90);
+  --sidebar-border: oklch(0.335 0.003 165);
+  --sidebar-ring: oklch(0.79 0.035 85);
 }
 
-.dark {
-  color-scheme: dark;
-}
+.dark { color-scheme: dark; }
 
-@utility bg-grid {
-  background-image:
-    linear-gradient(to right, var(--border) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black, transparent 75%);
-  animation: grid-drift 26s linear infinite;
-}
-
-@utility text-gradient {
-  background-image: linear-gradient(
-    100deg,
-    var(--primary),
-    var(--accent),
-    color-mix(in oklab, var(--primary) 55%, white),
-    var(--primary)
-  );
-  background-size: 260% 100%;
-  background-clip: text;
-  color: transparent;
-  animation: sheen 9s ease-in-out infinite;
-}
-
-@utility surface-card {
-  position: relative;
-  background-image: linear-gradient(
-    160deg,
-    color-mix(in oklab, var(--card) 88%, transparent),
-    color-mix(in oklab, var(--background) 78%, transparent)
-  );
-  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
-  backdrop-filter: blur(14px) saturate(130%);
-  transition:
-    border-color 300ms ease,
-    transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 300ms ease;
-
-  /* holographic top edge */
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto 0;
-    height: 1px;
-    border-radius: inherit;
-    background-image: linear-gradient(
-      90deg,
-      transparent,
-      color-mix(in oklab, var(--primary) 70%, transparent),
-      color-mix(in oklab, var(--accent) 70%, transparent),
-      transparent
-    );
-    opacity: 0.55;
-    transition: opacity 300ms ease;
-    pointer-events: none;
-  }
+@utility institutional-panel {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  transition: border-color 180ms ease, background-color 180ms ease;
 
   &:hover {
-    border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
-    box-shadow:
-      0 0 0 1px color-mix(in oklab, var(--primary) 22%, transparent),
-      0 22px 60px -30px var(--glow);
-    transform: translateY(-3px);
-  }
-
-  &:hover::before {
-    opacity: 1;
+    border-color: color-mix(in oklab, var(--foreground) 25%, var(--border));
   }
 }
-
-@utility glow-ring {
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--primary) 40%, transparent),
-    0 0 22px -6px color-mix(in oklab, var(--primary) 28%, transparent),
-    0 24px 70px -30px var(--glow);
-}
-
-@utility radial-fade {
-  background-image:
-    radial-gradient(
-      ellipse 55% 45% at 50% 0%,
-      color-mix(in oklab, var(--primary) 16%, transparent),
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 40% 40% at 85% 15%,
-      color-mix(in oklab, var(--accent) 12%, transparent),
-      transparent 70%
-    );
-}
-
-/* slow-moving aurora glow for hero-style sections */
-@utility aurora {
-  background-image:
-    radial-gradient(
-      40% 45% at 20% 20%,
-      color-mix(in oklab, var(--primary) 22%, transparent),
-      transparent 70%
-    ),
-    radial-gradient(
-      35% 40% at 80% 10%,
-      color-mix(in oklab, var(--accent) 20%, transparent),
-      transparent 70%
-    );
-  filter: blur(28px);
-  animation: aurora-shift 18s ease-in-out infinite alternate;
-}
-
-/* faint CRT scanlines for a technical, instrument-panel feel */
-@utility scanlines {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    color-mix(in oklab, var(--foreground) 4%, transparent) 0px,
-    color-mix(in oklab, var(--foreground) 4%, transparent) 1px,
-    transparent 1px,
-    transparent 4px
-  );
-  mask-image: linear-gradient(to bottom, black, transparent 85%);
-  opacity: 0.35;
-}
-
-/* monospace-flavoured technical label */
-@utility tech-label {
-  font-family: ui-monospace, "SFMono-Regular", "Menlo", monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: color-mix(in oklab, var(--primary) 78%, var(--foreground));
-}
-
-@keyframes grid-drift {
-  from {
-    background-position:
-      0 0,
-      0 0;
-  }
-  to {
-    background-position:
-      56px 56px,
-      56px 56px;
-  }
-}
-
-@keyframes sheen {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-@keyframes aurora-shift {
-  from {
-    transform: translate3d(-2%, -1%, 0) scale(1);
-  }
-  to {
-    transform: translate3d(3%, 2%, 0) scale(1.08);
-  }
-}
-
-
 
 @layer base {
-  * {
-    border-color: var(--color-border);
-  }
+  * { border-color: var(--color-border); }
 
   html {
     color-scheme: dark;
@@ -260,19 +96,23 @@
     scroll-padding-top: 5rem;
   }
 
-
   body {
+    min-width: 320px;
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    font-feature-settings: "kern", "liga", "ss01";
     -webkit-font-smoothing: antialiased;
   }
 
-  h1,
-  h2,
-  h3,
-  h4 {
+  h1, h2, h3, h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+
+  ::selection {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
   }
 }
